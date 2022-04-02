@@ -16,7 +16,7 @@ app.use(bodyParser.json({ type: 'application/json' }))
 const versionHandler = function (req, res, next) {
   if (req !== null )
   {
-    if(req.hasOwnProperty('body') && req.body !== null)
+    if(req.hasOwnProperty('headers') && req.body !== null)
     {
       if(req.headers.hasOwnProperty('app-version'))
       {
@@ -30,8 +30,6 @@ const versionHandler = function (req, res, next) {
   }
 
 }
-
-
 
 app.use(versionHandler)
 
@@ -52,7 +50,17 @@ app.post('/api/imagename', textParser, function (req, res) {
 })
 
 app.get('/api/adfrequence',  function (req, res) {
-    res.send(JSON.stringify({"frequence": 12}))
+  if(req.hasOwnProperty('headers') && req.body !== null)
+  {
+    if(req.headers.hasOwnProperty('platform'))
+    {
+        if(req.headers.platform === 'ios'){
+          res.send(JSON.stringify({"frequence": 4}))
+          return
+        }
+    }
+  }
+  res.send(JSON.stringify({"frequence": 12}))
 })
 
 function isDataAvailableForHanzi(hanzi, data){
@@ -89,7 +97,7 @@ app.post('/api/info',  function (req, res) {
       let hanzi = req.body.hanzi
       let preferedLanguageData = data_eng
       if(getPreferedLanguage(req) === "deu"){
-        preferedLanguageData = data_ger
+        preferedLanguageData = data_eng
       }
 
       if(isDataAvailableForHanzi(hanzi,preferedLanguageData)){
@@ -97,6 +105,28 @@ app.post('/api/info',  function (req, res) {
         return
       }
 
+  }
+
+  res.send(JSON.stringify({"definition": "Not Found", "pinyin" : "Not Found" }) )
+})
+
+app.post('/api/infolist/pinyin',  function (req, res) {
+  if (req.body.hasOwnProperty('hanziList') && req.body.hanzi !== null)
+  {
+      let hanziList = req.body.hanziList
+      let preferedLanguageData = data_eng
+      if(getPreferedLanguage(req) === "deu"){
+        preferedLanguageData = data_eng
+      }
+      
+      let pinyin = []
+      for (let hanzi of hanziList) {
+        if(isDataAvailableForHanzi(hanzi,preferedLanguageData)){
+          pinyin.push(preferedLanguageData[hanzi].pinyin)
+        }
+      }
+      res.send(JSON.stringify({"pinyinList": pinyin}))
+      return
   }
 
   res.send(JSON.stringify({"definition": "Not Found", "pinyin" : "Not Found" }) )
