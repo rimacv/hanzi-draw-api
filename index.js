@@ -128,6 +128,7 @@ app.post('/api/infolist/pinyin',  function (req, res) {
       res.send(JSON.stringify({"pinyinList": pinyin}))
       return
   }
+  res.send(JSON.stringify({"definition": "Not Found", "pinyin" : "Not Found" }) )
 })
 
 app.post('/api/strokehints',  function (req, res) {
