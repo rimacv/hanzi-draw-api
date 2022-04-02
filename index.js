@@ -55,7 +55,7 @@ app.get('/api/adfrequence',  function (req, res) {
     if(req.headers.hasOwnProperty('platform'))
     {
         if(req.headers.platform === 'ios'){
-          res.send(JSON.stringify({"frequence": 4}))
+          res.send(JSON.stringify({"frequence": 5}))
           return
         }
     }
