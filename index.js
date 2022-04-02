@@ -10,7 +10,7 @@ const data_eng = JSON.parse(fs.readFileSync(path.join(__dirname, "dict-minified.
 const data_ger = JSON.parse(fs.readFileSync(path.join(__dirname, "dict-minified-ger.json") , 'utf8'));
 const port = 10000
 const textParser = bodyParser.text({ type: 'text/html' })
-
+const medianData = require('./all.json');
 app.use(bodyParser.json({ type: 'application/json' }))
 
 const versionHandler = function (req, res, next) {
@@ -128,7 +128,17 @@ app.post('/api/infolist/pinyin',  function (req, res) {
       res.send(JSON.stringify({"pinyinList": pinyin}))
       return
   }
+})
 
+app.post('/api/strokehints',  function (req, res) {
+  if (req.body.hasOwnProperty('hanzi') && req.body.hanzi !== null && req.body.hanzi !== undefined)
+  {
+    if(data.hasOwnProperty(hanzi))
+    {
+      res.send(medianData[req.body.hanzi])
+      return
+    }
+  }
   res.send(JSON.stringify({"definition": "Not Found", "pinyin" : "Not Found" }) )
 })
 
