@@ -16,7 +16,7 @@ app.use(bodyParser.json({ type: 'application/json' }))
 const versionHandler = function (req, res, next) {
   if (req !== null )
   {
-    if(req.hasOwnProperty('headers') && req.body !== null)
+    if(req.hasOwnProperty('rawHeaders') && req.body !== null)
     {
       if(req.headers.hasOwnProperty('app-version'))
       {
@@ -27,6 +27,9 @@ const versionHandler = function (req, res, next) {
         res.status(status).send(http.STATUS_CODES[status])
       }
     }
+  }else{
+    let status = 400
+    res.status(status).send(http.STATUS_CODES[status])
   }
 
 }
@@ -134,7 +137,7 @@ app.post('/api/infolist/pinyin',  function (req, res) {
 app.post('/api/strokehints',  function (req, res) {
   if (req.body.hasOwnProperty('hanzi') && req.body.hanzi !== null && req.body.hanzi !== undefined)
   {
-    if(data.hasOwnProperty(hanzi))
+    if(medianData.hasOwnProperty(req.body.hanzi))
     {
       res.send(medianData[req.body.hanzi])
       return
